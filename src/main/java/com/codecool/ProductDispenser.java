@@ -21,4 +21,16 @@ public class ProductDispenser {
         return products.keySet();
     }
 
+    public void stockUp(Product product, int amount) {
+
+        if (!products.containsKey(product)) {
+            return;
+        }
+
+        products.put(product, amount);
+    }
+
+    public boolean isProductInStock(Product product) {
+        return products.get(product) > 0;
+    }
 }
