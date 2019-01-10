@@ -33,4 +33,14 @@ public class ProductDispenser {
     public boolean isProductInStock(Product product) {
         return products.get(product) > 0;
     }
+
+    public void dispenseProduct(Product product) {
+        int amount = products.get(product);
+
+        if (amount == 0) {
+            return;
+        }
+
+        products.put(product, --amount);
+    }
 }
