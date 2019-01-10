@@ -22,4 +22,17 @@ class ProductDispenserTest {
 
         assertIterableEquals(expected, actual);
     }
+
+    @Test
+    void testCanAddMultipleProducts() {
+        Set<Product> expected = new HashSet<>();
+        expected.add(new Product("cola", 1f));
+        expected.add(new Product("chips", 0.5f));
+        expected.add(new Product("candy", 0.65f));
+        expected.forEach(productDispenser::addProduct);
+
+        Set<Product> actual = productDispenser.getAvailableProducts();
+
+        assertIterableEquals(expected, actual);
+    }
 }
