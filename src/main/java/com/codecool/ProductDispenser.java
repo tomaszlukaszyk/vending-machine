@@ -9,10 +9,16 @@ public class ProductDispenser {
     private Map<Product, Integer> products = new HashMap<>();
 
     public void addProduct(Product product) {
+
+        if (products.containsKey(product)) {
+            return;
+        }
+
+        products.put(product, 0);
     }
 
     public Set<Product> getAvailableProducts() {
-        return null;
+        return products.keySet();
     }
 
 }
