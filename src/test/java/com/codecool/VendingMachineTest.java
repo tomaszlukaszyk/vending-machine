@@ -14,7 +14,9 @@ class VendingMachineTest {
 
     @BeforeEach
     void init() {
-        vendingMachine = new VendingMachine();
+        Bank bank = new Bank();
+        ProductDispenser productDispenser = new ProductDispenser();
+        vendingMachine = new VendingMachine(bank, productDispenser);
     }
 
     @Test
