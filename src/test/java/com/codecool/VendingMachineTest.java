@@ -34,4 +34,13 @@ class VendingMachineTest {
 
         assertIterableEquals(expected, actual);
     }
+
+    @Test
+    void testShouldRejectOneInvalidCoin() {
+        vendingMachine.acceptCoin(Coin.PENNY);
+        List<Coin> expected = Arrays.asList(Coin.PENNY);
+        List<Coin> actual = vendingMachine.getCoinReturn();
+
+        assertIterableEquals(expected, actual);
+    }
 }
