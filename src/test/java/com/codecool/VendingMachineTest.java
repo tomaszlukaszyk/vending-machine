@@ -26,4 +26,12 @@ class VendingMachineTest {
         assertIterableEquals(expected, actual);
     }
 
+    @Test
+    void testShouldAcceptMultipleValidCoins() {
+        List<Coin> expected = Arrays.asList(Coin.NICKEL, Coin.DIME, Coin.QUARTER, Coin.NICKEL);
+        expected.forEach(vendingMachine::acceptCoin);
+        List<Coin> actual = vendingMachine.getAcceptedCoins();
+
+        assertIterableEquals(expected, actual);
+    }
 }
