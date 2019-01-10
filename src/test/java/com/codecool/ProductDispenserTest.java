@@ -35,4 +35,13 @@ class ProductDispenserTest {
 
         assertIterableEquals(expected, actual);
     }
+
+    @Test
+    void testStockUpProduct() {
+        Product product = new Product("cola", 1f);
+        productDispenser.addProduct(product);
+        productDispenser.stockUp(product, 1);
+
+        assertTrue(productDispenser.isProductInStock(product));
+    }
 }
