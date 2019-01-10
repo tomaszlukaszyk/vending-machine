@@ -32,4 +32,16 @@ class BankTest {
 
         assertIterableEquals(expected, actual);
     }
+
+    @Test
+    void testMakeChangeRemovesCoinsFromAvailableCoins() {
+        bank.stockUp(Coin.NICKEL, 10);
+        bank.stockUp(Coin.DIME, 10);
+        bank.stockUp(Coin.QUARTER, 10);
+        bank.makeChange(0.65f);
+
+        assertEquals(9, bank.getAvailableCoins().get(Coin.NICKEL));
+        assertEquals(9, bank.getAvailableCoins().get(Coin.DIME));
+        assertEquals(8, bank.getAvailableCoins().get(Coin.QUARTER));
+    }
 }
