@@ -43,4 +43,14 @@ class VendingMachineTest {
 
         assertIterableEquals(expected, actual);
     }
+
+    @Test
+    void testShouldCorrectlyCalculateClientFundsFromInsertedCoins() {
+        List<Coin> coins = Arrays.asList(Coin.NICKEL, Coin.QUARTER, Coin.PENNY, Coin.DIME, Coin.QUARTER);
+        coins.forEach(vendingMachine::acceptCoin);
+        float expected = 0.65f;
+        float actual = vendingMachine.getClientFunds();
+
+        assertEquals(expected, actual);
+    }
 }

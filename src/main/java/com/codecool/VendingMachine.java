@@ -10,6 +10,7 @@ public class VendingMachine {
 
     private List<Coin> acceptedCoins = new ArrayList<>();
     private List<Coin> coinReturn = new ArrayList<>();
+    private float clientFunds = 0f;
 
     public void acceptCoin(Coin coin) {
         if (validCoins.contains(coin)) {
@@ -25,5 +26,9 @@ public class VendingMachine {
 
     public List<Coin> getCoinReturn() {
         return coinReturn;
+    }
+
+    public float getClientFunds() {
+        return clientFunds;
     }
 }
