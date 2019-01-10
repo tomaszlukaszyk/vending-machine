@@ -44,4 +44,15 @@ class ProductDispenserTest {
 
         assertTrue(productDispenser.isProductInStock(product));
     }
+
+    @Test
+    void testProductIsOutOfStockAfterDispense() {
+        Product product = new Product("cola", 1f);
+        productDispenser.addProduct(product);
+        productDispenser.stockUp(product, 1);
+
+        productDispenser.dispenseProduct(product);
+
+        assertFalse(productDispenser.isProductInStock(product));
+    }
 }
