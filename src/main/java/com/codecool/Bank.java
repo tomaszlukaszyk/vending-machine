@@ -1,31 +1,43 @@
 package com.codecool;
 
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class Bank {
 
-    private Map<Coin, Integer> coins = new HashMap<>();
-    private List<Coin> availableCoins = Arrays.asList(Coin.NICKEL, Coin.DIME, Coin.QUARTER);
+    private final Map<Coin, Float> validCoins;
+
+    private Map<Coin, Integer> availableCoins = new HashMap<>();
 
     public Bank() {
-        availableCoins.forEach(coin -> {
-            coins.put(coin, 0);
+        validCoins = new HashMap<>();
+        validCoins.put(Coin.NICKEL, 0.05f);
+        validCoins.put(Coin.DIME, 0.1f);
+        validCoins.put(Coin.QUARTER, 0.25f);
+
+        validCoins.keySet().forEach(coin -> {
+            availableCoins.put(coin, 0);
         });
     }
 
-    public Map<Coin, Integer> getCoins() {
-        return coins;
+    public boolean isCoinValid(Coin coin) {
+        return validCoins.keySet().contains(coin);
+    }
+
+    public float getValueOfCoin(Coin coin) {
+        return validCoins.get(coin);
+    }
+
+    public Map<Coin, Integer> getAvailableCoins() {
+        return availableCoins;
     }
 
     public void stockUp(Coin coin, int amount) {
 
-        if (!availableCoins.contains(coin)) {
+        if (!isCoinValid(coin)) {
             return;
         }
 
-        coins.put(coin, amount);
+        availableCoins.put(coin, amount);
     }
 }

@@ -13,7 +13,7 @@ class BankTest {
         int expected = 6;
         bank.stockUp(Coin.NICKEL, expected);
 
-        int actual = bank.getCoins().get(Coin.NICKEL);
+        int actual = bank.getAvailableCoins().get(Coin.NICKEL);
 
         assertEquals(expected, actual);
     }

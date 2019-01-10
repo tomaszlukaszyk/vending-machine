@@ -7,23 +7,22 @@ import java.util.Map;
 
 public class VendingMachine {
 
-    private final Map<Coin, Float> validCoins;
+    private Bank bank;
+    private ProductDispenser productDispenser;
 
     private List<Coin> acceptedCoins = new ArrayList<>();
     private List<Coin> coinReturn = new ArrayList<>();
     private float clientFunds = 0f;
 
-    public VendingMachine() {
-        validCoins = new HashMap<>();
-        validCoins.put(Coin.NICKEL, 0.05f);
-        validCoins.put(Coin.DIME, 0.1f);
-        validCoins.put(Coin.QUARTER, 0.25f);
+    public VendingMachine(Bank bank, ProductDispenser productDispenser) {
+        this.bank = bank;
+        this.productDispenser = productDispenser;
     }
 
     public void acceptCoin(Coin coin) {
-        if (validCoins.containsKey(coin)) {
+        if (bank.isCoinValid(coin)) {
             acceptedCoins.add(coin);
-            clientFunds += validCoins.get(coin);
+            clientFunds += bank.getValueOfCoin(coin);
         } else {
             coinReturn.add(coin);
         }
