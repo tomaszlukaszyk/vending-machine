@@ -12,6 +12,11 @@ public class VendingMachine {
     private List<Coin> coinReturn = new ArrayList<>();
 
     public void acceptCoin(Coin coin) {
+        if (validCoins.contains(coin)) {
+            acceptedCoins.add(coin);
+        } else {
+            coinReturn.add(coin);
+        }
     }
 
     public List<Coin> getAcceptedCoins() {
