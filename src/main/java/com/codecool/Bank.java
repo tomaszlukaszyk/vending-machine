@@ -104,4 +104,19 @@ public class Bank {
             availableCoins.put(coin, amount);
         });
     }
+
+    public boolean canMakeChange(float amount) {
+        Map<Coin, Integer> neededCoins = getNeededCoins(amount);
+
+        for (Coin coin: neededCoins.keySet()) {
+            int amountNeeded = neededCoins.get(coin);
+            int amountAvailable = availableCoins.get(coin);
+
+            if (amountNeeded > amountAvailable) {
+                return false;
+            }
+        }
+
+        return true;
+    }
 }
