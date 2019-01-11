@@ -39,18 +39,34 @@ public class Bank {
     }
 
     public List<Coin> makeChange(float amount) {
-        List<Map.Entry<Coin, Float>> denominations = new DenominationsSorter().getSortedDenominations(validCoins);
         List<Coin> change = new ArrayList<>();
+        Map<Coin, Integer> neededCoins = getNeededCoins(amount);
+
+        neededCoins.keySet().forEach(coin -> {
+
+            for (int i = 0; i < neededCoins.get(coin); i++) {
+                change.add(coin);
+            }
+        });
+
+        removeNeededCoinsFromAvailable(neededCoins);
+
+        return change;
+    }
+
+    public Map<Coin, Integer> getNeededCoins(float amount) {
+        List<Map.Entry<Coin, Float>> denominations = new DenominationsSorter().getSortedDenominations(validCoins);
+        Map<Coin, Integer> neededCoins = new HashMap<>();
 
         for (Map.Entry<Coin, Float> denomination: denominations) {
 
             int count = (int)(amount / denomination.getValue());
-            addToChange(change, denomination, count);
+            addToNeeded(neededCoins, denomination.getKey(), count);
             amount = amount % denomination.getValue();
             amount = Math.round(amount * 100.0f) / 100.0f;
         }
 
-        return change;
+        return neededCoins;
     }
 
     private class DenominationsSorter {
@@ -64,10 +80,28 @@ public class Bank {
         }
     }
 
-    private void addToChange(List<Coin> change, Map.Entry<Coin, Float> denomination, int count) {
+    private void addToNeeded(Map<Coin, Integer> neededCoins, Coin coin, int count) {
 
         for (int i = 0; i < count; i++) {
-            change.add(denomination.getKey());
+
+            if (!neededCoins.containsKey(coin)) {
+
+                neededCoins.put(coin, 1);
+            } else {
+
+                int amount = neededCoins.get(coin);
+                neededCoins.put(coin, ++amount);
+            }
         }
+    }
+
+    private void removeNeededCoinsFromAvailable(Map<Coin, Integer> neededCoins) {
+
+        neededCoins.keySet().forEach(coin -> {
+
+            int amount = availableCoins.get(coin);
+            amount -= neededCoins.get(coin);
+            availableCoins.put(coin, amount);
+        });
     }
 }

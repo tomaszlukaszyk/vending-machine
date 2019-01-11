@@ -30,7 +30,8 @@ class BankTest {
 
         List<Coin> actual = bank.makeChange(0.65f);
 
-        assertIterableEquals(expected, actual);
+        assertTrue(expected.size() == actual.size() &&
+                expected.containsAll(actual) && actual.containsAll(expected));
     }
 
     @Test
