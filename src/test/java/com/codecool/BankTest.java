@@ -45,4 +45,13 @@ class BankTest {
         assertEquals(9, bank.getAvailableCoins().get(Coin.DIME));
         assertEquals(8, bank.getAvailableCoins().get(Coin.QUARTER));
     }
+
+    @Test
+    void testCanMakeChangeReturnsTrueWhenEnoughCoinsProvided() {
+        bank.stockUp(Coin.NICKEL, 10);
+        bank.stockUp(Coin.DIME, 10);
+        bank.stockUp(Coin.QUARTER, 10);
+
+        assertTrue(bank.canMakeChange(0.65f));
+    }
 }
