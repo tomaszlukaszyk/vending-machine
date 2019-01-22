@@ -1,13 +1,14 @@
 package com.codecool;
 
+import java.math.BigDecimal;
 import java.util.Objects;
 
-public class Product {
+public class Product implements Comparable<Product> {
 
     private String name;
-    private float price;
+    private BigDecimal price;
 
-    public Product(String name, float price) {
+    public Product(String name, BigDecimal price) {
         this.name = name;
         this.price = price;
     }
@@ -16,7 +17,7 @@ public class Product {
         return name;
     }
 
-    public float getPrice() {
+    public BigDecimal getPrice() {
         return price;
     }
 
@@ -31,5 +32,15 @@ public class Product {
     @Override
     public int hashCode() {
         return Objects.hash(name);
+    }
+
+    @Override
+    public int compareTo(Product o) {
+        return this.name.compareTo(o.getName());
+    }
+
+    @Override
+    public String toString() {
+        return name;
     }
 }

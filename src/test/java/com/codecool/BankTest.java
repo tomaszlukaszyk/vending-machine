@@ -2,6 +2,7 @@ package com.codecool;
 
 import org.junit.jupiter.api.Test;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
@@ -28,7 +29,7 @@ class BankTest {
         bank.stockUp(Coin.QUARTER, 10);
         List<Coin> expected = Arrays.asList(Coin.QUARTER, Coin.QUARTER, Coin.DIME, Coin.NICKEL);
 
-        List<Coin> actual = bank.makeChange(0.65f);
+        List<Coin> actual = bank.makeChange(new BigDecimal("0.65"));
 
         assertTrue(expected.size() == actual.size() &&
                 expected.containsAll(actual) && actual.containsAll(expected));
@@ -39,7 +40,7 @@ class BankTest {
         bank.stockUp(Coin.NICKEL, 10);
         bank.stockUp(Coin.DIME, 10);
         bank.stockUp(Coin.QUARTER, 10);
-        bank.makeChange(0.65f);
+        bank.makeChange(new BigDecimal("0.65"));
 
         assertEquals(9, bank.getAvailableCoins().get(Coin.NICKEL));
         assertEquals(9, bank.getAvailableCoins().get(Coin.DIME));
@@ -52,6 +53,21 @@ class BankTest {
         bank.stockUp(Coin.DIME, 10);
         bank.stockUp(Coin.QUARTER, 10);
 
-        assertTrue(bank.canMakeChange(0.65f));
+        assertTrue(bank.canMakeChange(new BigDecimal("0.65")));
+        assertEquals(10, bank.getAvailableCoins().get(Coin.NICKEL));
+        assertEquals(10, bank.getAvailableCoins().get(Coin.DIME));
+        assertEquals(10, bank.getAvailableCoins().get(Coin.QUARTER));
+    }
+
+    @Test
+    void testMakeChangeReturnsCorrectWhenHigherDenominationsNotAvailable() {
+        bank.stockUp(Coin.NICKEL, 10);
+        bank.stockUp(Coin.DIME, 10);
+        List<Coin> expected = Arrays.asList(Coin.DIME, Coin.DIME, Coin.DIME, Coin.DIME, Coin.DIME, Coin.DIME, Coin.NICKEL);
+
+        List<Coin> actual = bank.makeChange(new BigDecimal("0.65"));
+
+        assertTrue(expected.size() == actual.size() &&
+                expected.containsAll(actual) && actual.containsAll(expected));
     }
 }

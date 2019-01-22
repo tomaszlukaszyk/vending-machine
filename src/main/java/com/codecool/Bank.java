@@ -1,18 +1,19 @@
 package com.codecool;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 public class Bank {
 
-    private final Map<Coin, Float> validCoins;
+    private final Map<Coin, BigDecimal> validCoins;
 
     private Map<Coin, Integer> availableCoins = new HashMap<>();
 
     public Bank() {
         validCoins = new HashMap<>();
-        validCoins.put(Coin.NICKEL, 0.05f);
-        validCoins.put(Coin.DIME, 0.1f);
-        validCoins.put(Coin.QUARTER, 0.25f);
+        validCoins.put(Coin.NICKEL, new BigDecimal("0.05"));
+        validCoins.put(Coin.DIME, new BigDecimal("0.10"));
+        validCoins.put(Coin.QUARTER, new BigDecimal("0.25"));
 
         validCoins.keySet().forEach(coin -> availableCoins.put(coin, 0));
     }
@@ -21,7 +22,7 @@ public class Bank {
         return validCoins.keySet().contains(coin);
     }
 
-    public float getValueOfCoin(Coin coin) {
+    public BigDecimal getValueOfCoin(Coin coin) {
         return validCoins.get(coin);
     }
 
@@ -38,7 +39,7 @@ public class Bank {
         availableCoins.put(coin, amount);
     }
 
-    public List<Coin> makeChange(float amount) {
+    public List<Coin> makeChange(BigDecimal amount) {
         List<Coin> change = new ArrayList<>();
         Map<Coin, Integer> neededCoins = getNeededCoins(amount);
 
@@ -49,40 +50,39 @@ public class Bank {
             }
         });
 
-        removeNeededCoinsFromAvailable(neededCoins);
-
         return change;
     }
 
-    public Map<Coin, Integer> getNeededCoins(float amount) {
-        List<Map.Entry<Coin, Float>> denominations = new DenominationsSorter().getSortedDenominations(validCoins);
+    public Map<Coin, Integer> getNeededCoins(BigDecimal amount) {
+        List<Map.Entry<Coin, BigDecimal>> denominations = getSortedDenominations();
         Map<Coin, Integer> neededCoins = new HashMap<>();
 
-        for (Map.Entry<Coin, Float> denomination: denominations) {
+        for (Map.Entry<Coin, BigDecimal> denomination: denominations) {
 
-            int count = (int)(amount / denomination.getValue());
-            addToNeeded(neededCoins, denomination.getKey(), count);
-            amount = amount % denomination.getValue();
-            amount = Math.round(amount * 100.0f) / 100.0f;
+            int count = amount.divide(denomination.getValue(), BigDecimal.ROUND_HALF_EVEN).intValue();
+            int countOfUsed = addToNeeded(neededCoins, denomination.getKey(), count);
+            amount = amount.subtract(denomination.getValue().multiply(new BigDecimal(countOfUsed)));
         }
 
         return neededCoins;
     }
 
-    private class DenominationsSorter {
+    private List<Map.Entry<Coin, BigDecimal>> getSortedDenominations() {
 
-        List<Map.Entry<Coin, Float>> getSortedDenominations(Map<Coin, Float> map) {
+        List<Map.Entry<Coin, BigDecimal>> sortedEntries = new ArrayList<>(validCoins.entrySet());
+        sortedEntries.sort((e1, e2) -> e2.getValue().compareTo(e1.getValue()));
 
-            List<Map.Entry<Coin, Float>> sortedEntries = new ArrayList<>(map.entrySet());
-            sortedEntries.sort((e1, e2) -> e2.getValue().compareTo(e1.getValue()));
-
-            return sortedEntries;
-        }
+        return sortedEntries;
     }
 
-    private void addToNeeded(Map<Coin, Integer> neededCoins, Coin coin, int count) {
+    private int addToNeeded(Map<Coin, Integer> neededCoins, Coin coin, int count) {
+        int countOfUsed = 0;
 
         for (int i = 0; i < count; i++) {
+
+            if (availableCoins.get(coin) == 0) {
+                continue;
+            }
 
             if (!neededCoins.containsKey(coin)) {
 
@@ -92,31 +92,40 @@ public class Bank {
                 int amount = neededCoins.get(coin);
                 neededCoins.put(coin, ++amount);
             }
+
+            removeCoinFromAvailable(coin);
+            countOfUsed++;
         }
+
+        return countOfUsed;
     }
 
-    private void removeNeededCoinsFromAvailable(Map<Coin, Integer> neededCoins) {
+    private void removeCoinFromAvailable(Coin coin) {
 
-        neededCoins.keySet().forEach(coin -> {
-
-            int amount = availableCoins.get(coin);
-            amount -= neededCoins.get(coin);
-            availableCoins.put(coin, amount);
-        });
+        int amount = availableCoins.get(coin);
+        availableCoins.put(coin, --amount);
     }
 
-    public boolean canMakeChange(float amount) {
+    public boolean canMakeChange(BigDecimal amount) {
         Map<Coin, Integer> neededCoins = getNeededCoins(amount);
+        BigDecimal sum = new BigDecimal("0.00");
 
-        for (Coin coin: neededCoins.keySet()) {
-            int amountNeeded = neededCoins.get(coin);
-            int amountAvailable = availableCoins.get(coin);
-
-            if (amountNeeded > amountAvailable) {
-                return false;
-            }
+        for (Map.Entry<Coin, Integer> entry: neededCoins.entrySet()) {
+            Coin coin = entry.getKey();
+            sum = sum.add(validCoins.get(coin).multiply(new BigDecimal(entry.getValue())));
         }
 
-        return true;
+        boolean result = sum.equals(amount);
+        returnNeededToAvailable(neededCoins);
+
+        return result;
+    }
+
+    private void returnNeededToAvailable(Map<Coin, Integer> neededCoins) {
+
+        neededCoins.forEach((coin, amount) -> {
+            int availableAmount = availableCoins.get(coin);
+            availableCoins.put(coin, availableAmount + amount);
+        });
     }
 }

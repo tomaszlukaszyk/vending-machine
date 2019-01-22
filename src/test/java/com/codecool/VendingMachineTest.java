@@ -3,6 +3,7 @@ package com.codecool;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
@@ -50,8 +51,8 @@ class VendingMachineTest {
     void testShouldCorrectlyCalculateClientFundsFromInsertedCoins() {
         List<Coin> coins = Arrays.asList(Coin.NICKEL, Coin.QUARTER, Coin.PENNY, Coin.DIME, Coin.QUARTER);
         coins.forEach(vendingMachine::acceptCoin);
-        float expected = 0.65f;
-        float actual = vendingMachine.getClientFunds();
+        BigDecimal expected = new BigDecimal("0.65");
+        BigDecimal actual = vendingMachine.getClientFunds();
 
         assertEquals(expected, actual);
     }
